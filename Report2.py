@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
-from openpyxl.styles import Border, Side, PatternFill, Font, Alignment, Color,\
- Fill
+from openpyxl.styles import Border, Side, PatternFill, Font, Alignment, Color, Fill
 from datetime import datetime
 from operator import itemgetter
 import os
