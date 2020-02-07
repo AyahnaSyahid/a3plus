@@ -19,7 +19,7 @@ file_pattern = (
 )
 
 Matcher = re.compile(file_pattern, re.I)
-
+'''TEST'''
 
 class Counter():
 
@@ -185,7 +185,7 @@ class Counter():
         ws[str_cell(CJUMLAH-3, next_row)].font = Font(color="00ffffff", bold=True)
         ws[str_cell(CJUMLAH-3, next_row)].alignment = Alignment(horizontal="right")
         wb.save(file_name)
-        
+
 def validate(_file):
     def do_rename(old):
         while True:
