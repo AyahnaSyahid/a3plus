@@ -22,3 +22,13 @@ def Collate(pdf1, pdf2, out="collated.pdf"):
     for b, p in npages:
         writer.addPage(books[b].getPage(p))
     return writer
+
+def mergeJoin(pdf1, pdf2):
+	
+	writer = Writer()
+	books = Reader(pdf1), Reader(pdf2)
+	for b in books:
+		for p in range(b.getNumPages()):
+			writer.addPage(b.getPage(p))
+	return writer 
+	
