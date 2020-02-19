@@ -10,7 +10,6 @@ from PyPDF2.merger import PdfFileWriter as Writer
 import numpy as np
 
 def Collate(pdf1, pdf2, out="collated.pdf"):
-    
     writer = Writer()
     books = Reader(pdf1), Reader(pdf2)
     blength = books[0].getNumPages()
@@ -24,7 +23,6 @@ def Collate(pdf1, pdf2, out="collated.pdf"):
     return writer
 
 def mergeJoin(pdf1, pdf2):
-	
 	writer = Writer()
 	books = Reader(pdf1), Reader(pdf2)
 	for b in books:
