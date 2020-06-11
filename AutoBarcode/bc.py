@@ -1,4 +1,3 @@
-
 from barcode import Code128
 from svgwrite import cm, mm, px
 import svgwrite
@@ -98,7 +97,7 @@ def test1():
         bc_part.add(canvas.rect(i[0], i[1], fill='black'))
     canvas.save(pretty=True)
 
-if __name__ == "__main__":
+def test2(): 
     size = Size( 120 * 3.125, 55 * 3.125 ) # in 90dpi -> ' * 3.125 is for 300dpi 
     code = Code128("Holis_NHK").build()[0]
     modules = get_modules(code)
@@ -116,4 +115,16 @@ if __name__ == "__main__":
     barcode.add(Canv.text("Holis_NHK",x=["187.5px"], y=["162.5px"], style="fill:black;font-size:25pt;text-anchor:middle;"))
     Canv.save(pretty=True)
         
+
+def test3(c):
+    from defs import CustomWriter
+    from barcode import Gs1_128
     
+    c = Gs1_128(c)
+    c.writer = CustomWriter()
+    c.save(c)
+    
+if __name__ == "__main__":
+    import sys
+    code = sys.argv[1]
+    test3(code)
