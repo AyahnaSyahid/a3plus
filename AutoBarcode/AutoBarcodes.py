@@ -1,6 +1,10 @@
 #!/bin/python3
 """
-
+PREPARASI : (SUKA LUPA) -> 
+    atur ukuran page ke 325 * 485 ;
+    tentukan xpos dengan cara membuat bidang persegi dari pojok kiri atas page sampai pojok kiri atas tempat barcode
+            maka -> XPOS[0] = lebar
+                 -> XPOS[1] = tinggi
 """
 import barcode
 from barcode.writer import mm2px as px
@@ -116,7 +120,8 @@ def addBarcode(elem, txcode, size, pos, rot, btype="gs1_128"):
                     #style='text-indent:10;text-align:center;',
                     font_weight='bold',
                     font_size=fh,
-                    letter_spacing='10',
+    # LETTER SPACING = Work on Inkscape But Weird on COrelDraw
+                    #letter_spacing='10',
                     text_anchor='middle',
                     font_family='Times New Roman, Times'
                     ))
@@ -143,12 +148,15 @@ def addBarcode(elem, txcode, size, pos, rot, btype="gs1_128"):
                      
 
 if __name__ == "__main__":
-    codes = [ "PMLRQ{:>04d}".format(x) for x in range(901, 1101) ]
+    codes = [ "MRD10{:>04d}".format(x) for x in range(1001, 1101) ]
     p = None
     row = 0
     col = 0
-    xsize = (px(32), px(14))
-    xpos = [9.783, 439.584]   # dalam mm
+    xsize = (px(33), px(14))
+    #xpos = [9.783, 439.584]   # dalam mm
+    
+# XPOS HERE
+    xpos = [12.46, 437.579]   # dalam mm
     for c in codes:
         if col == 0 and row == 0:
             p = createPage("{} - {}".format(c, codes[codes.index(c) + 24]))
