@@ -1,10 +1,13 @@
 #!/bin/python3
 """
+*** R 3 SEPT 2020 ***
+
 PREPARASI : (SUKA LUPA) -> 
     atur ukuran page ke 325 * 485 ;
-    tentukan xpos dengan cara membuat bidang persegi dari pojok kiri atas page sampai pojok kiri atas tempat barcode
-            maka -> XPOS[0] = lebar
-                 -> XPOS[1] = tinggi
+    tentukan xpos dengan cara membuat bidang persegi (BASE) dari pojok kiri atas page
+    sampai titik tengah tempat barcode
+            maka -> XPOS[0] = lebar BASE
+                 -> XPOS[1] = tinggi BASE
 """
 import barcode
 from barcode.writer import mm2px as px
@@ -89,22 +92,22 @@ def addBarcode(elem, txcode, size, pos, rot, btype="gs1_128"):
     fh = ( size[1] * 125 / 1000 )
     ### calculate width of modules
     mc = 0 #module count
-    for i, m in modules:
+    for _, m in modules:
         mc += m
     mw = sbw / mc #module width
     mh = sbh      #module height
     
-    bgroup = p.g(id=txcode)
+    bgroup = elem.g(id=txcode)
     
-    p.defs.add(bgroup)
+    elem.defs.add(bgroup)
     xpos = 0                       #initial xposition bar
     ypos = ( size[0] * 10 / 1000 ) #initial yposition bar
     ### add bg white to the group
-    bgroup.add(p.rect((xpos,0), (sw,sh), fill="white", fill_opacity="0"))
+    bgroup.add(elem.rect((xpos,0), (sw,sh), fill="white", fill_opacity="0"))
     xpos += (size[0] - sbw) / 2
     for m, c in modules:
         if m:
-            bgroup.add(p.rect(
+            bgroup.add(elem.rect(
                 (xpos, ypos),
                 (c * mw, mh),
                 fill='black'))
@@ -113,7 +116,7 @@ def addBarcode(elem, txcode, size, pos, rot, btype="gs1_128"):
     
     ''' Commented for strategi
     '''
-    bgroup.add(p.text(
+    bgroup.add(elem.text(
                     txcode,
                     insert = (cx, ypos + fh),
                     fill='black',
@@ -136,37 +139,52 @@ def addBarcode(elem, txcode, size, pos, rot, btype="gs1_128"):
                     text_anchor='middle',
                     font_family='Times New Roman, Times'
                     ))
+    
+    
     '''
-    translate = "translate({} {})".format(pos[0]+(sh/2)-cx, pos[1]+(sw/2)-cy)
+    translate = "translate({} {})".format(pos[0]-cx, pos[1]-cy)
     rotate = "rotate({} {} {})".format(rot, cx, cy)
-    p.add(p.use('#' + txcode,
+    elem.add(elem.use('#' + txcode,
                 insert = (0,0),
                 #transform="translate({} {}),rotate({} {} {})".format(pos[0]-sh, pos[1]+sw, rot, cx, cy) 
                 transform= ','.join([translate,rotate]) 
                 ))
     #p.save()
-                     
+def bs4_simplify(lang, name):
+    from bs4 import BeautifulSoup
+    souvg = BeautifulSoup(lang, 'xml')
+    use_attr = [ x['transform'] for x in souvg.find_all('use') ]
+    for x in souvg.find_all('use'):
+        x.decompose()
+    g = souvg.defs.find_all('g')
+    for i, att in zip(g, use_attr):
+        i['transform']=att
+        souvg.svg.insert(0, i)
+    souvg.defs.decompose()
+    with open(name, 'w') as ot:
+        ot.write(souvg.prettify())
 
-if __name__ == "__main__":
-    codes = [ "MRD10{:>04d}".format(x) for x in range(1001, 1101) ]
+def a3p_make(codes, bsz=(33, 14), init_pos=(16.703, 461.324), offsets=(63.6, 95), rotation = 90):
     p = None
-    row = 0
-    col = 0
-    xsize = (px(33), px(14))
-    #xpos = [9.783, 439.584]   # dalam mm
-    
-# XPOS HERE
-    xpos = [12.46, 437.579]   # dalam mm
+    col, row = 0, 0
+    xsize = [ px(x) for x in bsz ]
+    offsets = [px(x) for x in offsets]
+    xpos = [px(n) for n in init_pos]
     for c in codes:
         if col == 0 and row == 0:
             p = createPage("{} - {}".format(c, codes[codes.index(c) + 24]))
-        pos = xpos[0] + (63.6 * col), xpos[1] - ( 95 * row ) 
-        addBarcode(p, c, xsize , (px(pos[0]),px(pos[1])), 90)
+        pos = xpos[0] + (offsets[0] * col), xpos[1] - ( offsets[1] * row ) 
+        addBarcode(p, c, xsize , (pos[0],pos[1]), rotation)
         col += 1
         if col > 4:
             col = 0
             row += 1
             if row > 4:
                 row = 0
-                print("Saving file at" + c)
-                p.save()
+                bs4_simplify(p.tostring(), p.filename)
+        
+        
+if __name__ == "__main__":
+    cds = [ "MRD10{:>04d}".format(x) for x in range(1001, 1026) ]
+    a3p_make(cds,rotation=90)
+    
