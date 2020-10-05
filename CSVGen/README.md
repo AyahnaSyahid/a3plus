@@ -2,10 +2,10 @@
 
 Adalah software untuk membuat csv file yang nantinya bisa digunakan untuk fitur print merge pada CorelDraw
 
-## Requirement
+## Interpreter
 
 python 3.6+ (Saya menggunakan python 3.8)
 
-### packages :
+### Dependensi :
 
-PyQt5
+> PyQt5
