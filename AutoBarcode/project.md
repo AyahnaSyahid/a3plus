@@ -23,6 +23,6 @@
     diatas, Ukuran metrik dan font masih belum bisa di prediksi
     
     Cara pemanggilan :
-        python3 bc.py argument
+        python3 bc.py [argument]
             Menghasilkan file barcode 'argument' (Gs1_128) dengan extensi SVG
     
